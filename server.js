@@ -1,4 +1,4 @@
-var server = require('http'),
+var server = require('https'),
     url = require('url'),
     path = require('path'),
     fs = require('fs');
@@ -63,7 +63,12 @@ function serverHandler(request, response) {
 
 var app;
 
-app = server.createServer(serverHandler);
+var privateKey = fs.readFileSync("sslcert/learnomaprivate.key", "utf8");
+var certificate = fs.readFileSync("sslcert/learnomacertificate.crt", "utf8");
+
+var credentials = { key: privateKey, cert: certificate };
+
+app = server.createServer(credentials, serverHandler);
 
 app = app.listen(process.env.PORT || 8080, process.env.IP || "0.0.0.0", function() {
     var addr = app.address();
